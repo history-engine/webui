@@ -1,3 +1,17 @@
+<script setup>
+// import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
+import logo from '@/assets/logo.svg?raw'
+
+// const form = ref({
+//   username: '',
+//   email: '',
+//   password: '',
+//   privacyPolicies: false,
+// })
+
+// const isPasswordVisible = ref(false)
+</script>
+
 <template>
   <div class="auth-wrapper d-flex align-center justify-center pa-4">
     <VCard
@@ -15,37 +29,37 @@
         </template>
 
         <VCardTitle class="text-2xl font-weight-bold">
-          sneat
+          History Engine
         </VCardTitle>
       </VCardItem>
 
       <VCardText class="pt-2">
         <h5 class="text-h5 mb-1">
-          Adventure starts here 🚀
+          History Engine 用户注册
         </h5>
         <p class="mb-0">
-          Make your app management easy and fun!
+          梦想从这里开始~ 🚀
         </p>
       </VCardText>
 
       <VCardText>
-        <VForm @submit.prevent="$router.push('/')">
+        <v-form validate-on="submit lazy" @submit.prevent="submit">
           <VRow>
             <!-- Username -->
             <VCol cols="12">
               <VTextField
-                v-model="form.username"
+                v-model="username"
                 autofocus
-                label="Username"
-                placeholder="Johndoe"
+                label="用户名"
+                placeholder="需要保证唯一性"
               />
             </VCol>
             <!-- email -->
             <VCol cols="12">
               <VTextField
-                v-model="form.email"
-                label="Email"
-                placeholder="johndoe@email.com"
+                v-model="email"
+                label="邮箱"
+                placeholder="尽量使用Hotmail、Gmail等常用邮箱"
                 type="email"
               />
             </VCol>
@@ -53,28 +67,33 @@
             <!-- password -->
             <VCol cols="12">
               <VTextField
-                v-model="form.password"
-                label="Password"
-                placeholder="············"
+                v-model="password"
+                label="密码"
+                placeholder="8位以上数字、符号和字母的组合"
                 :type="isPasswordVisible ? 'text' : 'password'"
-                :append-inner-icon="isPasswordVisible ? 'bx-hide' : 'bx-show'"
+                :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
                 @click:append-inner="isPasswordVisible = !isPasswordVisible"
               />
               <div class="d-flex align-center mt-1 mb-4">
                 <VCheckbox
                   id="privacy-policy"
-                  v-model="form.privacyPolicies"
+                  v-model="privacyPolicies"
                   inline
                 />
                 <VLabel
                   for="privacy-policy"
                   style="opacity: 1;"
                 >
-                  <span class="me-1">I agree to</span>
+                  <span class="me-1">我同意并愿意遵守</span>
+                  <a
+                    href="javascript:void(0)"
+                    class="text-primary me-1"
+                  >用户协议</a>
+                  <span class="me-1">与</span>
                   <a
                     href="javascript:void(0)"
                     class="text-primary"
-                  >privacy policy & terms</a>
+                  >隐私政策</a>
                 </VLabel>
               </div>
 
@@ -82,7 +101,7 @@
                 block
                 type="submit"
               >
-                Sign up
+                注册
               </VBtn>
             </VCol>
 
@@ -91,34 +110,70 @@
               cols="12"
               class="text-center text-base"
             >
-              <span>Already have an account?</span>
+              <span>已有账号？</span>
               <RouterLink
                 class="text-primary ms-2"
-                to="/login"
+                to="/user/login"
               >
-                Sign in instead
+                立即登录
               </RouterLink>
             </VCol>
 
-            <VCol
-              cols="12"
-              class="d-flex align-center"
-            >
-              <VDivider />
-              <span class="mx-4">or</span>
-              <VDivider />
-            </VCol>
+<!--            <VCol-->
+<!--              cols="12"-->
+<!--              class="d-flex align-center"-->
+<!--            >-->
+<!--              <VDivider />-->
+<!--              <span class="mx-4">or</span>-->
+<!--              <VDivider />-->
+<!--            </VCol>-->
 
             <!-- auth providers -->
-            <VCol
-              cols="12"
-              class="text-center"
-            >
-              <AuthProvider />
-            </VCol>
+<!--            <VCol-->
+<!--              cols="12"-->
+<!--              class="text-center"-->
+<!--            >-->
+<!--              <AuthProvider />-->
+<!--            </VCol>-->
           </VRow>
-        </VForm>
+        </v-form>
       </VCardText>
     </VCard>
   </div>
 </template>
+
+<!--<style lang="scss">-->
+<!--@use "@core/scss/template/pages/page-auth.scss";-->
+<!--</style>-->
+
+<script>
+import axios from "axios";
+export default {
+  data: () => ({
+    username: '',
+    email: '',
+    password: '',
+    privacyPolicies: false,
+    isPasswordVisible: false,
+  }),
+  methods: {
+    async submit() {
+      axios({
+        method: 'post',
+        url: '/api/user/register',
+        data: {
+          username: this.username,
+          email: this.email,
+          password: this.password,
+        },
+      })
+        .then(() => {
+          this.$router.push('/')
+        })
+        .catch(() => {
+          alert('注册失败，请检查您的邮箱和密码')
+        });
+    },
+  },
+};
+</script>

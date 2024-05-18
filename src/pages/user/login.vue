@@ -1,72 +1,160 @@
+<script setup>
+// import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
+import logo from '@/assets/logo.svg?raw'
+
+// const form = ref({
+//   email: '',
+//   password: '',
+//   remember: false,
+// })
+
+// const isPasswordVisible = ref(false)
+
+</script>
+
 <template>
-<div class="auth-wrapper d-flex align-center justify-center pa-4">
-  <v-card
-    class="auth-card pa-4 pt-7"
-    max-width="448"
-  >
-    <v-card-text class="pt-2">
-      <h5 class="text-h5 mb-1">
-        Adventure starts here 🚀
-      </h5>
-      <p class="mb-0">
-        Make your app management easy and fun!
-      </p>
-    </v-card-text>
-
-    <v-card-text>
-      <v-form>
-        <v-row>
-          <v-col cols="12">
-            <v-text-field
-              v-model="form.email"
-              autofocus
-              placeholder="johndoe@email.com"
-              label="Email"
-              type="email"
+  <div class="auth-wrapper d-flex align-center justify-center pa-4">
+    <VCard
+      class="auth-card pa-4 pt-7"
+      max-width="448"
+    >
+      <VCardItem class="justify-center">
+        <template #prepend>
+          <div class="d-flex">
+            <div
+              class="d-flex text-primary"
+              v-html="logo"
             />
-          </v-col>
+          </div>
+        </template>
 
-          <v-col cols="12">
-            <v-text-field
-              v-model="form.password"
-              label="Password"
-              placeholder="············"
-              :type="isPasswordVisible ? 'text' : 'password'"
-              :append-inner-icon="isPasswordVisible ? 'bx-hide' : 'bx-show'"
-              @click:append-inner="isPasswordVisible = !isPasswordVisible"
-            />
+        <VCardTitle class="text-2xl font-weight-bold">
+          History Engine
+        </VCardTitle>
+      </VCardItem>
 
-            <!-- remember me checkbox -->
-            <div class="d-flex align-center justify-space-between flex-wrap mt-1 mb-4">
-              <v-checkbox
-                v-model="form.remember"
-                label="Remember me"
+      <v-card-text class="pt-2">
+        <h5 class="text-h5 mb-1">
+          欢迎来到History Engine！ 👋🏻
+        </h5>
+        <p class="mb-0">
+          一起来记录经历过的辉煌吧！
+        </p>
+      </v-card-text>
+
+      <v-card-text>
+        <v-form validate-on="submit lazy" @submit.prevent="submit">
+          <v-row>
+            <!-- email -->
+            <v-col cols="12">
+              <VTextField
+                v-model="email"
+                autofocus
+                placeholder=""
+                label="邮箱"
+                type="email"
               />
-            </div>
+            </v-col>
 
-            <!-- login button -->
-            <v-btn
-              block
-              type="submit"
+            <!-- password -->
+            <v-col cols="12">
+              <v-text-field
+                v-model="password"
+                label="密码"
+                placeholder=""
+                :type="isPasswordVisible ? 'text' : 'password'"
+                :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
+                @click:append-inner="isPasswordVisible = !isPasswordVisible"
+              />
+
+              <!-- remember me checkbox -->
+              <div class="d-flex align-center justify-space-between flex-wrap mt-1 mb-4">
+                <v-checkbox
+                  v-model="remember"
+                  label="记住我"
+                />
+
+<!--                <RouterLink-->
+<!--                  class="text-primary ms-2 mb-1"-->
+<!--                  to="javascript:void(0)"-->
+<!--                >-->
+<!--                  忘记密码？-->
+<!--                </RouterLink>-->
+              </div>
+
+              <!-- login button -->
+              <VBtn
+                block
+                type="submit"
+              >
+                登录
+              </VBtn>
+            </v-col>
+
+            <!-- create account -->
+            <VCol
+              cols="12"
+              class="text-center text-base"
             >
-              Login
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-form>
-    </v-card-text>
-  </v-card>
-</div>
+              <span>没有账号？</span>
+              <RouterLink
+                class="text-primary ms-2"
+                to="/user/register"
+              >
+                立即注册
+              </RouterLink>
+            </VCol>
+
+<!--            <VCol-->
+<!--              cols="12"-->
+<!--              class="d-flex align-center"-->
+<!--            >-->
+<!--              <VDivider />-->
+<!--              <span class="mx-4">or</span>-->
+<!--              <VDivider />-->
+<!--            </VCol>-->
+
+            <!-- auth providers -->
+<!--            <VCol-->
+<!--              cols="12"-->
+<!--              class="text-center"-->
+<!--            >-->
+<!--              <AuthProvider />-->
+<!--            </VCol>-->
+          </v-row>
+        </v-form>
+      </v-card-text>
+    </VCard>
+  </div>
 </template>
 
-<style scoped lang="sass">
+<script>
+import axios from "axios";
 
-</style>
-
-<script setup>
-const form = ref({
-  email: '',
-  password: '',
-  remember: false,
-})
+export default {
+  data: () => ({
+    email : "",
+    password : "",
+    remember: false,
+    isPasswordVisible: false,
+  }),
+  methods: {
+    async submit() {
+      axios({
+        method: 'post',
+        url: '/api/user/login',
+        data: {
+          email: this.email,
+          password: this.password,
+        },
+      })
+        .then(() => {
+          this.$router.push('/')
+        })
+        .catch(() => {
+          alert('登录失败，请检查您的邮箱和密码')
+        });
+    },
+  },
+};
 </script>
