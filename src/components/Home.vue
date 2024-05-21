@@ -6,11 +6,12 @@
       max-width="600"
       >
       <v-text-field
-        :loading="loading"
+        v-model="query"
         variant="solo"
         append-inner-icon="mdi-magnify"
         single-line
         hide-details
+        @keyup.enter="onClick"
         @click:append-inner="onClick"
         label="请输入关键词"
       ></v-text-field>
@@ -30,18 +31,15 @@
 <script>
 export default {
   data: () => ({
-    loaded: false,
-    loading: false,
+    query: "",
   }),
 
   methods: {
     onClick () {
-      this.loading = true
-
-      setTimeout(() => {
-        this.loading = false
-        this.loaded = true
-      }, 2000)
+      this.$router.push({
+        path: '/search',
+        query: { query: this.query }
+      })
     },
   },
 }
