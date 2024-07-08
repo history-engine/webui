@@ -6,7 +6,7 @@
       <router-view />
     </v-main>
 
-    <!-- <AppFooter /> -->
+     <AppFooter />
   </v-app>
 </template>
 

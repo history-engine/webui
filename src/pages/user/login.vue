@@ -48,11 +48,11 @@ import logo from '@/assets/logo.svg?raw'
             <!-- email -->
             <v-col cols="12">
               <VTextField
-                v-model="email"
+                v-model="username"
                 autofocus
                 placeholder=""
-                label="邮箱"
-                type="email"
+                label="用户名"
+                type="username"
               />
             </v-col>
 
@@ -133,7 +133,7 @@ import axios from "axios";
 
 export default {
   data: () => ({
-    email : "",
+    username : "",
     password : "",
     remember: false,
     isPasswordVisible: false,
@@ -144,7 +144,7 @@ export default {
         method: 'post',
         url: '/api/user/login',
         data: {
-          email: this.email,
+          username: this.username,
           password: this.password,
         },
       })
