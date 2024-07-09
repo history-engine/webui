@@ -36,6 +36,14 @@
           </v-list-item>
       </v-list>
     </v-card>
+
+    <v-pagination
+      class="mt-3"
+      v-model="this.current_page"
+      @update:modelValue="onClick"
+      :length="this.total_page"
+      :total-visible="7"
+    ></v-pagination>
   </v-container>
 </template>
 
@@ -52,9 +60,13 @@ export default {
     loading: false,
     query: "",
     data: {},
+    total_page: 0,
+    current_page: 1,
+    limit: 10,
   }),
 
   mounted() {
+    this.current_page = parseInt(this.getQueryParam("page"), 10) || 5;
     this.query = this.getQueryParam('query');
     if (this.query) {
       this.onClick();
@@ -81,8 +93,8 @@ export default {
         },
         params: {
           query: this.query,
-          page: 1,
-          limit: 10,
+          page: this.current_page,
+          limit: this.limit,
           // start_time: '2023-11-21T17:28:33.480Z',
           // end_time: '2024-07-21T17:28:33.480Z',
         },
@@ -93,7 +105,8 @@ export default {
       })
         .then(resp => {
           this.loading = false
-          this.data = resp.data.data
+          this.data = resp.data.data.pages
+          this.total_page = Math.ceil(resp.data.data.total / this.limit)
           console.log("搜索完成")
         })
         .catch(() => {
