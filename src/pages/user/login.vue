@@ -148,8 +148,13 @@ export default {
           password: this.password,
         },
       })
-        .then(() => {
-          this.$router.push('/')
+        .then(res => {
+          if (res.data["code"] == 0) {
+            localStorage.setItem("jwt_token", res.data.data.jwt_token);
+            this.$router.push('/') // todo 回到之前的页面
+          } else {
+            alert(res.data.message);
+          }
         })
         .catch(() => {
           alert('登录失败，请检查您的邮箱和密码')

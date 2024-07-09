@@ -85,6 +85,10 @@ export default {
           limit: 10,
           // start_time: '2023-11-21T17:28:33.480Z',
           // end_time: '2024-07-21T17:28:33.480Z',
+        },
+        headers: {
+          "Authorization": "Bearer " + localStorage.getItem("jwt_token"),
+          "Content-Type": "application/json;charset=utf-8",
         }
       })
         .then(resp => {
