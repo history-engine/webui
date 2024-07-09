@@ -1,7 +1,7 @@
 <template>
   <v-container class="fill-height">
     <v-card
-      class="mx-auto"
+      class="mx-auto mt-n15"
       color="surface-light"
       max-width="600"
       >
