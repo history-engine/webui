@@ -66,7 +66,7 @@ export default {
   }),
 
   mounted() {
-    this.current_page = parseInt(this.getQueryParam("page"), 10) || 5;
+    this.current_page = parseInt(this.getQueryParam("page"), 10) || 1;
     this.query = this.getQueryParam('query');
     if (this.query) {
       this.onClick();
@@ -87,7 +87,7 @@ export default {
       this.loading = true
       axios({
         method: 'get',
-        url: '/api/page/search',
+        url: '/page/search',
         data: {
           query: this.keyword,
         },

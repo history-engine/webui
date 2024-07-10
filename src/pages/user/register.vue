@@ -160,7 +160,7 @@ export default {
     async submit() {
       axios({
         method: 'post',
-        url: '/api/user/register',
+        url: '/user/register',
         data: {
           username: this.username,
           email: this.email,

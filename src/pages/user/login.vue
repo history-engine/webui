@@ -142,7 +142,7 @@ export default {
     async submit() {
       axios({
         method: 'post',
-        url: '/api/user/login',
+        url: '/user/login',
         data: {
           username: this.username,
           password: this.password,
