@@ -166,6 +166,7 @@ export default {
           email: this.email,
           password: this.password,
         },
+        withCredentials: true,
       })
         .then(() => {
           this.$router.push('/')

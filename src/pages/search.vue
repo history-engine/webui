@@ -99,9 +99,10 @@ export default {
           // end_time: '2024-07-21T17:28:33.480Z',
         },
         headers: {
-          "Authorization": "Bearer " + localStorage.getItem("jwt_token"),
+          "Authorization": localStorage.getItem("jwt_token"),
           "Content-Type": "application/json;charset=utf-8",
-        }
+        },
+        withCredentials: true,
       })
         .then(resp => {
           this.loading = false

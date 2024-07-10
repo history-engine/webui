@@ -147,6 +147,7 @@ export default {
           username: this.username,
           password: this.password,
         },
+        withCredentials: true,
       })
         .then(res => {
           if (res.data["code"] == 0) {
