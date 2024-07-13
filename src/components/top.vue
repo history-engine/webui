@@ -1,22 +1,36 @@
 <template>
   <v-container>
-      <div class="d-flex">
-        <v-btn class="ma-2 pa-2" @click="$router.push('/')">首页</v-btn>
-        <v-btn v-show="!store.online" class="ma-2 pa-2" @click="$router.push('/user/register')">注册</v-btn>
-        <v-btn v-show="!store.online" class="ma-2 pa-2" @click="$router.push('/user/login')">登录</v-btn>
-        <v-btn v-show="store.online" class="ma-2 pa-2" @click="$router.push('/user/logout')">退出</v-btn>
-      </div>
+      <v-sheet class="d-flex flex-row-reverse">
+        <v-sheet v-show="store.online" class="ma-2 pa-2" @click="$router.push('/user/logout')">
+          <v-btn>退出</v-btn>
+        </v-sheet>
+        <v-sheet v-show="store.user.admin == 1" class="ma-2 pa-2" @click="$router.push('/admin')">
+          <v-btn>管理中心</v-btn>
+        </v-sheet>
+        <v-sheet v-show="store.online" class="ma-2 pa-2" @click="$router.push('/users/setting')">
+          <v-btn>用户中心</v-btn>
+        </v-sheet>
+        <v-sheet v-show="!store.online" class="ma-2 pa-2" @click="$router.push('/user/login')">
+          <v-btn>登录</v-btn>
+        </v-sheet>
+        <v-sheet v-show="!store.online" class="ma-2 pa-2 " @click="$router.push('/user/register')">
+          <v-btn>注册</v-btn>
+        </v-sheet>
+        <v-sheet class="ma-2 pa-2" @click="$router.push('/')">
+          <v-btn>首页</v-btn>
+        </v-sheet>
+      </v-sheet>
   </v-container>
 </template>
 
 <script>
-
+import logo from '@/assets/logo.svg?raw'
 import { useAppStore } from "@/stores/app";
 
 export default {
   setup() {
     const store = useAppStore();
-    return { store }
+    return { store,logo}
   },
 
   data: () => ({

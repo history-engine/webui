@@ -122,11 +122,10 @@ import http from "@/services/http"
 export default {
   setup() {
     const store = useAppStore();
-    return {store}
+    return {store, logo}
   },
 
   data: () => ({
-    logo: logo,
     username: "",
     password: "",
     remember: false,
