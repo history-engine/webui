@@ -9,11 +9,15 @@ export const useAppStore = defineStore('app', {
   }),
 
   actions: {
-    login() {
-      this.online = true;
+    login(user) {
+      if (user && user.id > 0) {
+        this.online = true;
+        this.user = user;
+      }
     },
     logout() {
       this.online = false;
+      this.user = {};
     },
   },
 })
