@@ -102,10 +102,13 @@ export default {
           // end_time: '2024-07-21T17:28:33.480Z',
         }
       }).then(resp => {
-        this.loading = false
-        this.data = resp.data.pages
-        this.total_page = Math.ceil(resp.data.total / this.limit)
-        console.log("搜索完成")
+          if (resp.code == 0) {
+            this.loading = false
+            this.data = resp.data.pages
+            this.total_page = Math.ceil(resp.data.total / this.limit)
+          } else {
+            alert(resp.message)
+          }
       }).catch(err => {
         alert('搜索失败：' + err)
       });
@@ -122,7 +125,7 @@ export default {
     }
   },
 
-  destroyed() {
+  unmounted() {
     window.removeEventListener('popstate', this.popstate, false);
   }
 }

@@ -20,6 +20,11 @@ http.interceptors.request.use(
 
 http.interceptors.response.use(
   response => {
+    if (response && response.data.code == 10) {
+      if (window.location.pathname.substring(0,5) != "/user") {
+        window.location.href = "/user/login";
+      }
+    }
     return response.data;
   },
   error => {

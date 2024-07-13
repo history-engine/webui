@@ -8,27 +8,34 @@
 </style>
 
 <script>
+import http from "@/services/http"
+import { useAppStore } from "@/stores/app";
 
 export default {
+  setup() {
+    const store = useAppStore();
+    return { store }
+  },
+
   data: () => ({
-    loaded: false,
-    loading: false,
-    query: "",
-    data: {},
+
   }),
 
-  mounted() {
-    if (localStorage.getItem("jwt_token")) {
-      localStorage.removeItem("jwt_token")
-      this.$router.push('/user/login')
-    }
+  methods: {
   },
 
-  methods: {
-    getQueryParam(param) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
-    },
-  },
+  mounted() {
+    http({
+      method: 'get',
+      url: '/user/logout',
+    }).then(res => {
+      if (res.code == 0) {
+        this.store.logout()
+        this.$router.push('/user/login')
+      }
+    }).catch(err => {
+      console.log('退出失败：' + err)
+    });
+  }
 }
 </script>
