@@ -8,7 +8,7 @@
       append-inner-icon="mdi-magnify"
       single-line
       hide-details
-      @keyup.enter="onClick"
+      @keydown.enter="onClick"
       @click:append-inner="onClick"
       label="请输入关键词"
     ></v-text-field>
@@ -52,22 +52,22 @@
 </style>
 
 <script>
-import axios from "axios";
+import http from "@/services/http"
 
 export default {
   data: () => ({
     loaded: false,
     loading: false,
-    query: "",
+    query: '',
     data: {},
-    total_page: 0,
+    total_page: 1,
     current_page: 1,
     limit: 10,
   }),
 
   mounted() {
     this.current_page = parseInt(this.getQueryParam("page"), 10) || 1;
-    this.query = this.getQueryParam('query');
+    this.query = this.getQueryParam('query') || '';
     if (this.query) {
       this.onClick();
     }
@@ -75,6 +75,7 @@ export default {
 
   created() {
     document.title = this.getQueryParam('query') + " - History Engine 搜索";
+    window.addEventListener('popstate', this.popstate, false);
   },
 
   methods: {
@@ -85,7 +86,9 @@ export default {
 
     onClick () {
       this.loading = true
-      axios({
+      this.$router.push({ path: '/search', query: { query: this.query, page: this.current_page } });
+
+      http({
         method: 'get',
         url: '/page/search',
         data: {
@@ -97,23 +100,30 @@ export default {
           limit: this.limit,
           // start_time: '2023-11-21T17:28:33.480Z',
           // end_time: '2024-07-21T17:28:33.480Z',
-        },
-        headers: {
-          "Authorization": localStorage.getItem("jwt_token"),
-          "Content-Type": "application/json;charset=utf-8",
-        },
-        withCredentials: true,
-      })
-        .then(resp => {
-          this.loading = false
-          this.data = resp.data.data.pages
-          this.total_page = Math.ceil(resp.data.data.total / this.limit)
-          console.log("搜索完成")
-        })
-        .catch(() => {
-          alert('搜索失败，可能是服务器故障。')
-        });
+        }
+      }).then(resp => {
+        this.loading = false
+        this.data = resp.data.pages
+        this.total_page = Math.ceil(resp.data.total / this.limit)
+        console.log("搜索完成")
+      }).catch(err => {
+        alert('搜索失败：' + err)
+      });
     },
+
+    popstate() {
+      this.onClick();
+    }
   },
+
+  watch: {
+    '$route.query.query'(newQuery) {
+      this.query = newQuery || '';
+    }
+  },
+
+  destroyed() {
+    window.removeEventListener('popstate', this.popstate, false);
+  }
 }
 </script>
