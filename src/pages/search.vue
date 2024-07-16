@@ -22,7 +22,7 @@
             ripple
           >
             <template v-slot:title>
-              <a :href="item.preview" target="_blank">{{item.title}}</a>
+              <span class="text-grey-lighten-2">[{{item.version}}]</span><a :href="item.preview" target="_blank">{{item.title}}</a>
             </template>
 
             <template v-slot:default>
