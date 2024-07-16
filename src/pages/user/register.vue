@@ -1,17 +1,3 @@
-<script setup>
-// import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
-import logo from '@/assets/logo.svg?raw'
-
-// const form = ref({
-//   username: '',
-//   email: '',
-//   password: '',
-//   privacyPolicies: false,
-// })
-
-// const isPasswordVisible = ref(false)
-</script>
-
 <template>
   <div class="auth-wrapper d-flex align-center justify-center pa-4">
     <VCard
@@ -147,8 +133,16 @@ import logo from '@/assets/logo.svg?raw'
 <!--</style>-->
 
 <script>
-import axios from "axios";
+import logo from '@/assets/logo.svg?raw'
+import { useAppStore } from "@/stores/app";
+import http from "@/services/http"
+
 export default {
+  setup() {
+    const store = useAppStore();
+    return {store, logo}
+  },
+
   data: () => ({
     username: '',
     email: '',
@@ -158,15 +152,14 @@ export default {
   }),
   methods: {
     async submit() {
-      axios({
+      http({
         method: 'post',
         url: '/user/register',
         data: {
           username: this.username,
           email: this.email,
           password: this.password,
-        },
-        withCredentials: true,
+        }
       })
         .then(() => {
           this.$router.push('/')
