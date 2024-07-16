@@ -18,19 +18,19 @@
           <v-list-item
             v-for="(item, index) in data"
             :key="index"
-            :prepend-avatar="item[0].avatar"
+            :prepend-avatar="item.avatar"
             ripple
           >
             <template v-slot:title>
-              <a :href="item[0].preview" target="_blank">{{item[0].title}}</a>
+              <a :href="item.preview" target="_blank">{{item.title}}</a>
             </template>
 
             <template v-slot:default>
-              <a :href="item[0].url">{{item[0].url}}</a>
+              <a :href="item.url">{{item.url}}</a>
             </template>
 
             <template v-slot:subtitle>
-              <div v-html="item[0].content"></div>
+              <div v-html="item.content"></div>
             </template>
 
           </v-list-item>
