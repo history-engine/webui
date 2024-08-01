@@ -4,28 +4,10 @@
       class="auth-card pa-4 pt-7"
       max-width="448"
     >
-      <VCardItem class="justify-center">
-        <template #prepend>
-          <div class="d-flex">
-            <div
-              class="d-flex text-primary"
-              v-html="logo"
-            />
-          </div>
-        </template>
-
-        <VCardTitle class="text-2xl font-weight-bold">
-          History Engine
-        </VCardTitle>
-      </VCardItem>
-
       <v-card-text class="pt-2">
-        <h5 class="text-h5 mb-1">
-          欢迎来到History Engine！ 👋🏻
+        <h5 class="text-h5 mb-1 font-weight-bold">
+          欢迎回到History Engine！ 👋🏻
         </h5>
-        <p class="mb-0">
-          一起来记录经历过的辉煌吧！
-        </p>
       </v-card-text>
 
       <v-card-text>
@@ -55,17 +37,17 @@
 
               <!-- remember me checkbox -->
               <div class="d-flex align-center justify-space-between flex-wrap mt-1 mb-4">
-                <v-checkbox
+                <!--<v-checkbox
                   v-model="remember"
                   label="记住我"
-                />
+                />-->
 
-<!--                <RouterLink-->
-<!--                  class="text-primary ms-2 mb-1"-->
-<!--                  to="javascript:void(0)"-->
-<!--                >-->
-<!--                  忘记密码？-->
-<!--                </RouterLink>-->
+                <RouterLink
+                  class="text-primary ms-2 mb-1"
+                  to="/user/rest-password"
+                >
+                  忘记密码？
+                </RouterLink>
               </div>
 
               <!-- login button -->
@@ -90,23 +72,6 @@
                 立即注册
               </RouterLink>
             </VCol>
-
-<!--            <VCol-->
-<!--              cols="12"-->
-<!--              class="d-flex align-center"-->
-<!--            >-->
-<!--              <VDivider />-->
-<!--              <span class="mx-4">or</span>-->
-<!--              <VDivider />-->
-<!--            </VCol>-->
-
-            <!-- auth providers -->
-<!--            <VCol-->
-<!--              cols="12"-->
-<!--              class="text-center"-->
-<!--            >-->
-<!--              <AuthProvider />-->
-<!--            </VCol>-->
           </v-row>
         </v-form>
       </v-card-text>
@@ -115,14 +80,13 @@
 </template>
 
 <script>
-import logo from '@/assets/logo.svg?raw'
 import { useAppStore } from "@/stores/app";
 import http from "@/services/http"
 
 export default {
   setup() {
     const store = useAppStore();
-    return {store, logo}
+    return {store}
   },
 
   data: () => ({

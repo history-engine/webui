@@ -1,35 +1,14 @@
 <template>
   <div class="auth-wrapper d-flex align-center justify-center pa-4">
-    <VCard
-      class="auth-card pa-4 pt-7"
-      max-width="448"
-    >
-      <VCardItem class="justify-center">
-        <template #prepend>
-          <div class="d-flex">
-            <div
-              class="d-flex text-primary"
-              v-html="logo"
-            />
-          </div>
-        </template>
-
-        <VCardTitle class="text-2xl font-weight-bold">
-          History Engine
-        </VCardTitle>
-      </VCardItem>
-
+    <VCard class="auth-card pa-4 pt-7" max-width="448">
       <VCardText class="pt-2">
-        <h5 class="text-h5 mb-1">
-          History Engine 用户注册
+        <h5 class="text-h5 mb-1 font-weight-bold">
+          欢迎来到History Engine！ 👋🏻
         </h5>
-        <p class="mb-0">
-          梦想从这里开始~ 🚀
-        </p>
       </VCardText>
 
       <VCardText>
-        <v-form validate-on="submit lazy" @submit.prevent="submit">
+        <v-form ref="form" lazy-validation>
           <VRow>
             <!-- Username -->
             <VCol cols="12">
@@ -60,7 +39,7 @@
                 :append-inner-icon="isPasswordVisible ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
                 @click:append-inner="isPasswordVisible = !isPasswordVisible"
               />
-              <div class="d-flex align-center mt-1 mb-4">
+              <!--<div class="d-flex align-center mt-1 mb-4">
                 <VCheckbox
                   id="privacy-policy"
                   v-model="privacyPolicies"
@@ -81,46 +60,16 @@
                     class="text-primary"
                   >隐私政策</a>
                 </VLabel>
-              </div>
+              </div>-->
 
-              <VBtn
-                block
-                type="submit"
-              >
-                注册
-              </VBtn>
+              <v-btn @click="submit" block>注册</v-btn>
             </VCol>
 
             <!-- login instead -->
-            <VCol
-              cols="12"
-              class="text-center text-base"
-            >
+            <VCol cols="12" class="text-center text-base">
               <span>已有账号？</span>
-              <RouterLink
-                class="text-primary ms-2"
-                to="/user/login"
-              >
-                立即登录
-              </RouterLink>
+              <RouterLink class="text-primary ms-2" to="/user/login">立即登录</RouterLink>
             </VCol>
-
-<!--            <VCol-->
-<!--              cols="12"-->
-<!--              class="d-flex align-center"-->
-<!--            >-->
-<!--              <VDivider />-->
-<!--              <span class="mx-4">or</span>-->
-<!--              <VDivider />-->
-<!--            </VCol>-->
-
-            <!-- auth providers -->
-<!--            <VCol-->
-<!--              cols="12"-->
-<!--              class="text-center"-->
-<!--            >-->
-<!--              <AuthProvider />-->
-<!--            </VCol>-->
           </VRow>
         </v-form>
       </VCardText>
@@ -128,19 +77,13 @@
   </div>
 </template>
 
-<!--<style lang="scss">-->
-<!--@use "@core/scss/template/pages/page-auth.scss";-->
-<!--</style>-->
-
 <script>
-import logo from '@/assets/logo.svg?raw'
 import { useAppStore } from "@/stores/app";
 import http from "@/services/http"
-
 export default {
   setup() {
     const store = useAppStore();
-    return {store, logo}
+    return {store}
   },
 
   data: () => ({
@@ -152,6 +95,10 @@ export default {
   }),
   methods: {
     async submit() {
+      if (!this.username || !this.email || !this.password) {
+        alert("不能为空");
+        return
+      }
       http({
         method: 'post',
         url: '/user/register',
@@ -160,13 +107,16 @@ export default {
           email: this.email,
           password: this.password,
         }
-      })
-        .then(() => {
-          this.$router.push('/')
-        })
-        .catch(() => {
-          alert('注册失败，请检查您的邮箱和密码')
-        });
+      }).then(res => {
+        if (res.code == 0) {
+          this.store.login(res.data.user);
+          this.$router.push('/');
+        } else {
+          alert("注册失败：" + res.message)
+        }
+      }).catch(err => {
+        alert("注册失败：" + err)
+      });
     },
   },
 };

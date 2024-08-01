@@ -22,13 +22,17 @@ const routes = [
     component: () => import('@/pages/user/register.vue')
   },
   {
-    path: '/search',
-    component: () => import('@/pages/search.vue')
-  },
-  {
     path: '/about',
     component: () => import('@/pages/about.vue')
   },
+  {
+    path: '/setting',
+    component: () => import('@/pages/setting/index.vue')
+  },
+  {
+    path: '/admin',
+    component: () => import('@/pages/admin/index.vue')
+  }
 ]
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

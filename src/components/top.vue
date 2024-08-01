@@ -7,7 +7,7 @@
         <v-sheet v-show="store.user.admin == 1" class="ma-2 pa-2" @click="$router.push('/admin')">
           <v-btn>管理中心</v-btn>
         </v-sheet>
-        <v-sheet v-show="store.online" class="ma-2 pa-2" @click="$router.push('/users/setting')">
+        <v-sheet v-show="store.online" class="ma-2 pa-2" @click="$router.push('/setting')">
           <v-btn>用户中心</v-btn>
         </v-sheet>
         <v-sheet v-show="!store.online" class="ma-2 pa-2" @click="$router.push('/user/login')">
