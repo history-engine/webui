@@ -96,7 +96,7 @@ export default {
       }
       this.loading = true
 
-      document.title = this.query + " - History Engine";
+      document.title = this.query ? this.query + " - History Engine" : "History Engine";
 
       http({
         method: 'get',
