@@ -19,13 +19,25 @@
           :key="index"
           :prepend-avatar="item.avatar"
           ripple
+          @mouseover="this.hoveredIndex = index"
+          @mouseleave="this.hoveredIndex = null"
         >
           <template v-slot:title>
-            <span class="text-grey-lighten-2">[{{item.version}}]</span><a :href="item.preview" target="_blank">{{item.title}}</a>
+            <span class="text-grey-lighten-2">[{{item.version}}]</span>
+            <a :href="item.preview" target="_blank">{{ subStr(item.title) }}</a>
+            <span class="text-grey-lighten-2 action-buttons" :class="{ 'hidden-btns': hoveredIndex !== index }">
+              [{{item.id}}][{{item.time}}][{{item.unique_id}}-{{item.version}}]
+            </span>
           </template>
 
           <template v-slot:default>
-            <a :href="item.url" target="_blank">{{item.url}}</a>
+            <div class="v-list-item-title">
+              <a :href="item.url" target="_blank">{{ subStr(item.url) }}</a>
+              <span :class="{ 'hidden-btns': hoveredIndex !== index }" class="action-buttons">
+                <v-btn color="red" variant="text" size="x-small" @click="confirmDeleteItem(item.unique_id, item.version)">删除</v-btn>
+                <v-btn color="red" variant="text" size="x-small" @click="confirmExcludeItem(item.unique_id, item.version)">忽略</v-btn>
+              </span>
+            </div>
           </template>
 
           <template v-slot:subtitle>
@@ -46,8 +58,14 @@
   </v-container>
 </template>
 
-<style scoped lang="sass">
+<style>
+.hidden-btns {
+  display: none;
+}
 
+.v-list-item:hover .hidden-btns {
+  display: inline-flex;
+}
 </style>
 
 <script>
@@ -62,6 +80,7 @@ export default {
     total_page: 1,
     current_page: 1,
     limit: 20,
+    hoveredIndex: null
   }),
 
   mounted() {
@@ -85,6 +104,63 @@ export default {
   },
 
   methods: {
+    confirmDeleteItem(uniqueId, version) {
+      if (confirm("确定删除吗？")) {
+        this.deleteItem(uniqueId, version);
+      }
+    },
+
+    confirmExcludeItem(uniqueId, version) {
+      if (confirm("确定忽略吗？")) {
+        this.excludeItem(uniqueId, version);
+      }
+    },
+
+    excludeItem(uniqueId, version) {
+      http({
+        method: "post",
+        url: "/page/exclude",
+        data: {
+          unique_id: uniqueId,
+          version: version
+        }
+      }).then(resp => {
+        if (resp.code == 0) {
+          this.onClick()
+        } else {
+          alert(resp.message)
+        }
+      }).catch(err => {
+        alert('操作失败：' + err)
+      });
+    },
+
+    deleteItem(uniqueId, version) {
+      http({
+        method: "delete",
+        url: "/page/delete",
+        data: {
+          unique_id: uniqueId,
+          version: version
+        }
+      }).then(resp => {
+          if (resp.code == 0) {
+            this.onClick()
+          } else {
+            alert(resp.message)
+          }
+      }).catch(err => {
+        alert('操作失败：' + err)
+      });
+    },
+
+    subStr(str) {
+      if (str.length <= 50) {
+        return str
+      }
+      return str.substring(0, 50) + '...'
+    },
+
     getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(param);

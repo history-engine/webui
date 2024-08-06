@@ -1,7 +1,7 @@
 <template>
   <v-app-bar flat class="bg-grey-lighten-4">
     <v-container class="mx-auto d-flex align-center justify-center ">
-      <v-btn text="首页" variant="text" @click="$router.push('/')"></v-btn>
+      <v-btn text="首页" variant="text" @click="goHome"></v-btn>
       <v-btn text="Dashboard" variant="text"></v-btn>
       <v-btn text="Messages" variant="text"></v-btn>
       <v-btn text="Profile" variant="text"></v-btn>
@@ -36,5 +36,11 @@ export default {
   data: () => ({
     //
   }),
+
+  methods: {
+    goHome() {
+      window.location.href = "/";
+    }
+  }
 }
 </script>
