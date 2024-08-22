@@ -24,18 +24,19 @@
         >
           <template v-slot:title>
             <span class="text-grey-lighten-2">[{{item.version}}]</span>
-            <a :href="item.preview" target="_blank">{{ subStr(item.title) }}</a>
+            <a :href="item.preview" target="_blank">{{ subStr(item.title, 30) }}</a>
             <span class="text-grey-lighten-2 action-buttons" :class="{ 'hidden-btns': hoveredIndex !== index }">
-              [{{item.id}}][{{item.time}}][{{item.unique_id}}-{{item.version}}]
+              [{{item.id}}][{{item.time}}][{{item.unique_id}}-{{item.version}}][{{item.size}}]
             </span>
           </template>
 
           <template v-slot:default>
             <div class="v-list-item-title">
-              <a :href="item.url" target="_blank">{{ subStr(item.url) }}</a>
+              <a :href="item.url" target="_blank">{{ subStr(item.url, 100) }}</a>
               <span :class="{ 'hidden-btns': hoveredIndex !== index }" class="action-buttons">
                 <v-btn color="red" variant="text" size="x-small" @click="confirmDeleteItem(item.unique_id, item.version)">删除</v-btn>
                 <v-btn color="red" variant="text" size="x-small" @click="confirmExcludeItem(item.unique_id, item.version)">忽略</v-btn>
+                <v-btn color="red" variant="text" size="x-small" @click="versions(item.unique_id)">其他版本</v-btn>
               </span>
             </div>
           </template>
@@ -76,6 +77,7 @@ export default {
     loaded: false,
     loading: false,
     query: '',
+    uniqueId: '',
     data: {},
     total_page: 1,
     current_page: 1,
@@ -86,6 +88,7 @@ export default {
   mounted() {
     this.current_page = parseInt(this.getQueryParam("page"), 10) || 0;
     this.query = this.getQueryParam('query') || '';
+    this.uniqueId = this.getQueryParam('unique_id') || '';
     this.onClick();
   },
 
@@ -116,7 +119,14 @@ export default {
       }
     },
 
-    excludeItem(uniqueId, version) {
+    versions(uniqueId) {
+      window.location.href = '/?unique_id=' + uniqueId;
+      // let query = this.$router.history.current.query;
+      // let path = this.$router.history.current.path;
+      // this.$router.push({ path, query: {uniqueId: uniqueId} });
+    },
+
+    excludeItem(uniqueId, version, del = 0) {
       http({
         method: "post",
         url: "/page/exclude",
@@ -154,11 +164,11 @@ export default {
       });
     },
 
-    subStr(str) {
-      if (str.length <= 50) {
+    subStr(str, size) {
+      if (str.length <= size) {
         return str
       }
-      return str.substring(0, 50) + '...'
+      return str.substring(0, size) + '...'
     },
 
     getQueryParam(param) {
@@ -172,18 +182,32 @@ export default {
       }
       this.loading = true
 
-      document.title = this.query ? this.query + " - History Engine" : "History Engine";
-
-      http({
-        method: 'get',
-        url: '/page/search',
-        params: {
+      let api = ''
+      let params = {}
+      if (this.uniqueId != '') {
+        api = '/page/versions'
+        params = {
+          unique_id: this.uniqueId,
+          page : this.current_page,
+          limit: this.limit
+        }
+        document.title = this.uniqueId + " - History Engine";
+      } else {
+        api = '/page/search'
+        params = {
           query: this.query,
-          page: this.current_page || 1,
-          limit: this.limit,
+            page: this.current_page || 1,
+            limit: this.limit,
           // start_time: '2023-11-21T17:28:33.480Z',
           // end_time: '2024-07-21T17:28:33.480Z',
         }
+        document.title = this.query ? this.query + " - History Engine" : "History Engine";
+      }
+
+      http({
+        method: 'get',
+        url: api,
+        params: params
       }).then(resp => {
         if (resp.code == 0) {
           this.loading = false
@@ -194,10 +218,13 @@ export default {
           if (this.query) {
             url.searchParams.set('query', this.query);
           }
+          if (this.uniqueId) {
+            url.searchParams.set('unique_id', this.uniqueId);
+          }
           if (this.current_page > 0) {
             url.searchParams.set('page', this.current_page);
           }
-          history.pushState({ query: this.query, page: this.current_page }, '', url);
+          history.pushState({ query: this.query, unique_id: this.uniqueId, page: this.current_page }, '', url);
         } else {
           alert(resp.message)
         }
