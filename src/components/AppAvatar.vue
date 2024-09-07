@@ -12,10 +12,6 @@
           <h3>{{ store.user.username }}</h3>
           <p class="text-caption mt-1">{{ store.user.email }}</p>
           <v-divider class="my-3"></v-divider>
-          <v-btn @click="$router.push('/setting')" variant="text" rounded>用户设置</v-btn>
-          <v-divider class="my-3"></v-divider>
-          <v-btn v-show="store.user.admin == 1" @click="$router.push('/admin')" variant="text" rounded>管理中心</v-btn>
-          <v-divider class="my-3"></v-divider>
           <v-btn @click="$router.push('/user/logout')" variant="text" rounded>退出登录</v-btn>
         </div>
       </v-card-text>

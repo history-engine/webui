@@ -2,10 +2,9 @@
   <v-app-bar flat class="bg-grey-lighten-4">
     <v-container class="mx-auto d-flex align-center justify-center ">
       <v-btn text="首页" variant="text" @click="goHome"></v-btn>
-      <v-btn text="Dashboard" variant="text"></v-btn>
-      <v-btn text="Messages" variant="text"></v-btn>
-      <v-btn text="Profile" variant="text"></v-btn>
-      <v-btn text="Updates" variant="text"></v-btn>
+      <v-btn text="统计信息" variant="text" @click="$router.push('/stats')"></v-btn>
+      <v-btn text="用户设置" variant="text" @click="$router.push('/setting')"></v-btn>
+      <v-btn text="管理中心" variant="text" @click="$router.push('/admin')"></v-btn>
 
       <v-spacer></v-spacer>
 
@@ -16,13 +15,6 @@
 
 <script setup>
 import AppAvatar from "@/components/AppAvatar.vue";
-
-const links = [
-  'Dashboard',
-  'Messages',
-  'Profile',
-  'Updates',
-]
 </script>
 
 <script>
