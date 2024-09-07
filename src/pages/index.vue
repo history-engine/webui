@@ -32,7 +32,7 @@
 
           <template v-slot:default>
             <div class="v-list-item-title">
-              <a :href="item.url" target="_blank">{{ subStr(item.url, 100) }}</a>
+              <a :href="item.url" target="_blank">{{ subStr(item.url, 70) }}</a>
               <span :class="{ 'hidden-btns': hoveredIndex !== index }" class="action-buttons">
                 <v-btn color="red" variant="text" size="x-small" @click="confirmDeleteItem(item.unique_id, item.version)">删除</v-btn>
                 <v-btn color="red" variant="text" size="x-small" @click="confirmExcludeItem(item.unique_id, item.version)">忽略</v-btn>
