@@ -37,6 +37,7 @@
                 <v-btn color="red" variant="text" size="x-small" @click="confirmDeleteItem(item.unique_id, item.version)">删除</v-btn>
                 <v-btn color="red" variant="text" size="x-small" @click="confirmExcludeItem(item.unique_id, item.version)">忽略</v-btn>
                 <v-btn color="red" variant="text" size="x-small" @click="versions(item.unique_id)">其他版本</v-btn>
+                <v-btn color="red" variant="text" size="x-small" @click="reParse(item.unique_id, item.version)">重新处理</v-btn>
               </span>
             </div>
           </template>
@@ -107,6 +108,26 @@ export default {
   },
 
   methods: {
+    reParse(uniqueId, version) {
+      http({
+        method: "post",
+        url: "/page/re-parse",
+        data: {
+          unique_id: uniqueId,
+          version: version
+        }
+      }).then(resp => {
+        if (resp.code == 0) {
+          alert(resp.message)
+          this.onClick()
+        } else {
+          alert(resp.message)
+        }
+      }).catch(err => {
+        alert('操作失败：' + err)
+      });
+    },
+
     confirmDeleteItem(uniqueId, version) {
       if (confirm("确定删除吗？")) {
         this.deleteItem(uniqueId, version);
@@ -126,7 +147,7 @@ export default {
       // this.$router.push({ path, query: {uniqueId: uniqueId} });
     },
 
-    excludeItem(uniqueId, version, del = 0) {
+    excludeItem(uniqueId, version) {
       http({
         method: "post",
         url: "/page/exclude",
