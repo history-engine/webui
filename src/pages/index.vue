@@ -1,4 +1,31 @@
 <template>
+  <div class="pa-4 text-center">
+    <v-dialog v-model="dialog" width="auto">
+      <v-card>
+        <v-card-text>
+          <span class="headline">选择要忽略的域名</span>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-text>
+          <v-checkbox
+            v-for="(option, index) in domainList"
+            :key="index"
+            v-model="domainSelected[option]"
+            :label="option"
+          ></v-checkbox>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-btn @click="dialog = false">取消</v-btn>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" @click="submitExclude">提交</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
+
   <v-container class="">
     <v-text-field
       :loading="loading"
@@ -35,7 +62,7 @@
               <a :href="item.url" target="_blank">{{ subStr(item.url, 70) }}</a>
               <span :class="{ 'hidden-btns': hoveredIndex !== index }" class="action-buttons">
                 <v-btn color="red" variant="text" size="x-small" @click="confirmDeleteItem(item.unique_id, item.version)">删除</v-btn>
-                <v-btn color="red" variant="text" size="x-small" @click="confirmExcludeItem(item.unique_id, item.version)">忽略</v-btn>
+                <v-btn color="red" variant="text" size="x-small" @click="openExcludeDialog(item.unique_id, item.version, item.url)">忽略</v-btn>
                 <v-btn color="red" variant="text" size="x-small" @click="versions(item.unique_id)">其他版本</v-btn>
                 <v-btn color="red" variant="text" size="x-small" @click="reParse(item.unique_id, item.version)">重新处理</v-btn>
               </span>
@@ -83,7 +110,13 @@ export default {
     total_page: 1,
     current_page: 1,
     limit: 20,
-    hoveredIndex: null
+    dialog: false,
+    currentUniqueId: "",
+    currentVersion: 0,
+    domainList: [],
+    domainSelected: {},
+    hoveredIndex: null,
+    domain: []
   }),
 
   mounted() {
@@ -134,12 +167,6 @@ export default {
       }
     },
 
-    confirmExcludeItem(uniqueId, version) {
-      if (confirm("确定忽略吗？")) {
-        this.excludeItem(uniqueId, version);
-      }
-    },
-
     versions(uniqueId) {
       window.location.href = '/?unique_id=' + uniqueId;
       // let query = this.$router.history.current.query;
@@ -147,16 +174,58 @@ export default {
       // this.$router.push({ path, query: {uniqueId: uniqueId} });
     },
 
-    excludeItem(uniqueId, version) {
+    extractDomains(url) {
+      const hostname = new URL(url).hostname;
+      const parts = hostname.split('.');
+
+      const domains = new Set();
+      domains.add(hostname);
+
+      if (parts.length >= 2) {
+        const rootDomain = parts.slice(-2).join('.');
+        domains.add(rootDomain);
+        domains.add(`*.${rootDomain}`);
+      }
+
+      if (parts.length > 2) {
+        for (let i = 1; i < parts.length - 1; i++) {
+          const wildcardDomain = `*.${parts.slice(i).join('.')}`;
+          domains.add(wildcardDomain);
+        }
+      }
+
+      return Array.from(domains);
+    },
+
+    openExcludeDialog(uniqueId, version, url) {
+      this.domainSelected = {}
+      this.domainList = this.extractDomains(url)
+      this.currentUniqueId = uniqueId
+      this.currentVersion = version
+      this.dialog = true;
+    },
+
+    submitExclude() {
+      const selectedValues = Object.keys(this.domainSelected).filter(
+        option => this.domainSelected[option]
+      );
+
+      if (!selectedValues || selectedValues.length == 0) {
+        alert("请选择域名")
+        return
+      }
+
       http({
         method: "post",
         url: "/page/exclude",
         data: {
-          unique_id: uniqueId,
-          version: version
+          unique_id: this.currentUniqueId,
+          version: this.currentVersion,
+          domains: selectedValues,
         }
       }).then(resp => {
         if (resp.code == 0) {
+          alert("操作成功，请等待生效。")
           this.onClick()
         } else {
           alert(resp.message)
@@ -164,6 +233,8 @@ export default {
       }).catch(err => {
         alert('操作失败：' + err)
       });
+
+      this.dialog = false;
     },
 
     deleteItem(uniqueId, version) {
