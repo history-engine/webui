@@ -19,7 +19,8 @@
 
         <v-card-actions>
           <v-btn @click="dialog = false">取消</v-btn>
-          <v-spacer></v-spacer>
+          <v-btn @click="selectAll">全选</v-btn>
+          <v-btn @click="invertSelection">反选</v-btn>
           <v-btn color="primary" @click="submitExclude">提交</v-btn>
         </v-card-actions>
       </v-card>
@@ -141,6 +142,18 @@ export default {
   },
 
   methods: {
+    selectAll() {
+      this.domainList.forEach(option => {
+        this.domainSelected[option] = true;
+      });
+    },
+
+    invertSelection() {
+      this.domainList.forEach(option => {
+        this.domainSelected[option] = !this.domainSelected[option];
+      });
+    },
+
     reParse(uniqueId, version) {
       http({
         method: "post",
