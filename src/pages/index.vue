@@ -25,6 +25,20 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-snackbar v-model="snackbar" :timeout="timeout" location="top">
+      {{ text }}
+
+      <template v-slot:actions>
+        <v-btn
+          color="blue"
+          variant="text"
+          @click="snackbar = false"
+        >
+          关闭
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 
   <v-container class="">
@@ -117,7 +131,10 @@ export default {
     domainList: [],
     domainSelected: {},
     hoveredIndex: null,
-    domain: []
+    domain: [],
+    snackbar: false,
+    text: "",
+    timeout: 3000,
   }),
 
   mounted() {
@@ -164,13 +181,13 @@ export default {
         }
       }).then(resp => {
         if (resp.code == 0) {
-          alert(resp.message)
+          this.alert(resp.message)
           this.onClick()
         } else {
-          alert(resp.message)
+          this.alert(resp.message)
         }
       }).catch(err => {
-        alert('操作失败：' + err)
+        this.alert('操作失败：' + err)
       });
     },
 
@@ -224,7 +241,7 @@ export default {
       );
 
       if (!selectedValues || selectedValues.length == 0) {
-        alert("请选择域名")
+        this.alert("请选择域名")
         return
       }
 
@@ -238,13 +255,13 @@ export default {
         }
       }).then(resp => {
         if (resp.code == 0) {
-          alert("操作成功，请等待生效。")
+          this.alert("操作成功，请等待生效。")
           this.onClick()
         } else {
-          alert(resp.message)
+          this.alert(resp.message)
         }
       }).catch(err => {
-        alert('操作失败：' + err)
+        this.alert("操作失败")
       });
 
       this.dialog = false;
@@ -260,12 +277,13 @@ export default {
         }
       }).then(resp => {
           if (resp.code == 0) {
+            this.alert("操作成功")
             this.onClick()
           } else {
-            alert(resp.message)
+            this.alert(resp.message)
           }
       }).catch(err => {
-        alert('操作失败：' + err)
+        this.alert('操作失败：' + err)
       });
     },
 
@@ -331,10 +349,10 @@ export default {
           }
           history.pushState({ query: this.query, unique_id: this.uniqueId, page: this.current_page }, '', url);
         } else {
-          alert(resp.message)
+          this.alert(resp.message)
         }
       }).catch(err => {
-        alert('搜索失败：' + err)
+        this.alert('搜索失败：' + err)
       });
     },
 
@@ -343,6 +361,11 @@ export default {
         this.query = event.state.query;
         this.onClick();
       }
+    },
+
+    alert(text) {
+      this.snackbar = true
+      this.text = text
     },
   }
 }
