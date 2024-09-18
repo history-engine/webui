@@ -1,5 +1,5 @@
 <template>
-  <div class="pa-4 text-center">
+  <div class="text-center">
     <v-dialog v-model="dialog" width="auto">
       <v-card>
         <v-card-text>
@@ -54,7 +54,7 @@
       label="请输入关键词"
     ></v-text-field>
 
-    <v-card class="mx-auto mt-3">
+    <v-card class="mx-auto mt-4">
       <v-list lines="two">
         <v-list-item
           v-for="(item, index) in data"
