@@ -1,6 +1,6 @@
 <template>
   <div class="text-center">
-    <v-dialog v-model="dialog" width="auto">
+    <v-dialog v-model="excludeDialog" width="auto">
       <v-card>
         <v-card-text>
           <span class="headline">选择要忽略的域名</span>
@@ -18,11 +18,25 @@
         </v-card-text>
 
         <v-card-actions>
-          <v-btn @click="dialog = false">取消</v-btn>
+          <v-btn @click="excludeDialog = false">取消</v-btn>
           <v-btn @click="selectAll">全选</v-btn>
           <v-btn @click="invertSelection">反选</v-btn>
           <v-btn color="primary" @click="submitExclude">提交</v-btn>
         </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="deleteDialog" max-width="400">
+      <v-card
+        prepend-icon="mdi-delete-alert"
+        text="将同步删除保存的HTML文件、全文索引记录、数据库记录，删除后不可恢复！"
+        title="确定删除吗？"
+      >
+        <template v-slot:actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="deleteDialog = false">取消</v-btn>
+          <v-btn color="primary" @click="submitDelete">确认</v-btn>
+        </template>
       </v-card>
     </v-dialog>
 
@@ -76,7 +90,7 @@
             <div class="v-list-item-title">
               <a :href="item.url" target="_blank">{{ subStr(item.url, 70) }}</a>
               <span :class="{ 'hidden-btns': hoveredIndex !== index }" class="action-buttons">
-                <v-btn color="red" variant="text" size="x-small" @click="confirmDeleteItem(item.unique_id, item.version)">删除</v-btn>
+                <v-btn color="red" variant="text" size="x-small" @click="openDeleteDialog(item.unique_id, item.version)">删除</v-btn>
                 <v-btn color="red" variant="text" size="x-small" @click="openExcludeDialog(item.unique_id, item.version, item.url)">忽略</v-btn>
                 <v-btn color="red" variant="text" size="x-small" @click="versions(item.unique_id)">其他版本</v-btn>
                 <v-btn color="red" variant="text" size="x-small" @click="reParse(item.unique_id, item.version)">重新处理</v-btn>
@@ -125,7 +139,8 @@ export default {
     total_page: 1,
     current_page: 1,
     limit: 20,
-    dialog: false,
+    excludeDialog: false,
+    deleteDialog: false,
     currentUniqueId: "",
     currentVersion: 0,
     domainList: [],
@@ -191,10 +206,10 @@ export default {
       });
     },
 
-    confirmDeleteItem(uniqueId, version) {
-      if (confirm("确定删除吗？")) {
-        this.deleteItem(uniqueId, version);
-      }
+    openDeleteDialog(uniqueId, version) {
+      this.currentUniqueId = uniqueId
+      this.currentVersion = version
+      this.deleteDialog = true;
     },
 
     versions(uniqueId) {
@@ -232,7 +247,7 @@ export default {
       this.domainList = this.extractDomains(url)
       this.currentUniqueId = uniqueId
       this.currentVersion = version
-      this.dialog = true;
+      this.excludeDialog = true;
     },
 
     submitExclude() {
@@ -264,20 +279,21 @@ export default {
         this.alert("操作失败")
       });
 
-      this.dialog = false;
+      this.currentUniqueId = ""
+      this.currentVersion = 0
+      this.excludeDialog = false;
     },
 
-    deleteItem(uniqueId, version) {
+    submitDelete() {
       http({
         method: "delete",
         url: "/page/delete",
         data: {
-          unique_id: uniqueId,
-          version: version
+          unique_id: this.currentUniqueId,
+          version: this.currentVersion
         }
       }).then(resp => {
           if (resp.code == 0) {
-            this.alert("操作成功")
             this.onClick()
           } else {
             this.alert(resp.message)
@@ -285,6 +301,10 @@ export default {
       }).catch(err => {
         this.alert('操作失败：' + err)
       });
+
+      this.currentUniqueId = ""
+      this.currentVersion = 0
+      this.deleteDialog = false;
     },
 
     subStr(str, size) {
