@@ -47,7 +47,7 @@ const routes = [
     component: () => import('@/pages/setting/storage.vue')
   },
   {
-    path: '/setting/storage',
+    path: '/setting/filetype',
     component: () => import('@/pages/setting/filetype.vue')
   },
   // 管理员相关
