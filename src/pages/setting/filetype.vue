@@ -1,14 +1,14 @@
 <template>
   <v-container class="">
-    setting
+    filetype
   </v-container>
 </template>
 
 <route>
 {
-  meta: {
-    layout: "setting"
-  }
+meta: {
+layout: "setting"
+}
 }
 </route>
 
