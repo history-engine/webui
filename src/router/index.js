@@ -50,6 +50,10 @@ const routes = [
     path: '/setting/filetype',
     component: () => import('@/pages/setting/filetype.vue')
   },
+  {
+    path: '/setting/page',
+    component: () => import('@/pages/setting/page.vue')
+  },
   // 管理员相关
   {
     path: '/admin',

@@ -13,6 +13,7 @@
                 <v-list-item color="grey-lighten-4" title="别名设置" @click="$router.push('/setting/alias')"></v-list-item>
                 <v-list-item color="grey-lighten-4" title="后缀过滤" @click="$router.push('/setting/filetype')"></v-list-item>
                 <v-list-item color="grey-lighten-4" title="存储设置" @click="$router.push('/setting/storage')"></v-list-item>
+                <v-list-item color="grey-lighten-4" title="页面管理" @click="$router.push('/setting/page')"></v-list-item>
               </v-list>
             </v-sheet>
           </v-col>
