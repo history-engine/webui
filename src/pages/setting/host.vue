@@ -1,5 +1,54 @@
 <template>
   <div class="text-center">
+    <v-dialog v-model="addDialog" max-width="600" persistent>
+      <v-card prepend-icon="mdi-account" title="添加host">
+        <v-card-text>
+          <v-row dense>
+            <v-col cols="12" sm="12">
+              <v-select
+                :items="types"
+                label="类型"
+                v-model="type"
+                item-title="state"
+                item-value="abbr"
+                return-object
+                required
+              ></v-select>
+            </v-col>
+
+            <v-col cols="12" sm="12">
+              <v-text-field
+                hint="支持完整域名a.b.cn、通配符*.b.cn、正则regexp:.*(\.|)(a|b|c|d)\.cn"
+                label="host"
+                v-model="host"
+                required
+              ></v-text-field>
+            </v-col>
+
+          </v-row>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn
+            text="取消"
+            variant="plain"
+            @click="addDialog = false"
+          ></v-btn>
+
+          <v-btn
+            color="primary"
+            text="提交"
+            variant="tonal"
+            @click="submitAdd"
+          ></v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-dialog v-model="editDialog" max-width="600" persistent>
       <v-card prepend-icon="mdi-account" title="修改host">
         <v-card-text>
@@ -74,7 +123,7 @@
 
   <v-container fluid>
     <v-row align="center" justify="end">
-      <v-col cols="10">
+      <v-col cols="8">
         <v-text-field
           v-model="keyword"
           prepend-inner-icon="mdi-magnify"
@@ -85,8 +134,9 @@
         ></v-text-field>
       </v-col>
 
-      <v-col cols="2">
-        <v-btn size="large" variant="tonal" @click="search">搜索</v-btn>
+      <v-col cols="4">
+        <v-btn size="large" variant="tonal" @click="search" class="mr-2">搜索</v-btn>
+        <v-btn size="large" variant="tonal" @click="openAddDialog">添加</v-btn>
       </v-col>
     </v-row>
 
@@ -150,11 +200,18 @@ export default {
     id: 0,
     type: {},
     host: '',
+    addDialog: false,
     deleteDialog: false,
     editDialog: false,
   }),
 
   methods: {
+    openAddDialog() {
+      this.type = { state: '忽略', abbr: 2 }
+      this.host = ""
+      this.addDialog = true
+    },
+
     openDeleteDialog(id) {
       this.id = id
       this.deleteDialog = true;
@@ -165,6 +222,28 @@ export default {
       this.type = { state: type == 1 ?  '包括' : '忽略', abbr: type }
       this.host = host
       this.editDialog = true;
+    },
+
+    submitAdd() {
+      http({
+        method: "put",
+        url: "/setting/host",
+        data: {
+          type: this.type.abbr,
+          host: this.host,
+        }
+      }).then(resp => {
+        if (resp.code == 0) {
+          this.search()
+        } else {
+          this.alert(resp.message)
+        }
+      }).catch(err => {
+        this.alert('操作失败：' + err)
+      });
+
+      this.host = ''
+      this.addDialog = false
     },
 
     submitDelete() {
