@@ -82,7 +82,7 @@ export default {
 
       http({
         method: "get",
-        url: "/setting/filetype",
+        url: "/api/setting/filetype",
         params: params,
       }).then(resp => {
         if (resp.code == 0) {

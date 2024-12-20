@@ -101,7 +101,7 @@ export default {
       }
       http({
         method: 'post',
-        url: '/user/register',
+        url: "/api/user/register",
         data: {
           username: this.username,
           email: this.email,

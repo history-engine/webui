@@ -77,7 +77,7 @@ export default {
     submitDelete() {
       http({
         method: "delete",
-        url: "/setting/page",
+        url: "/api/setting/page",
         params: {
           id: this.id,
         }
@@ -117,7 +117,7 @@ export default {
 
       http({
         method: "get",
-        url: "/setting/page",
+        url: "/api/setting/page",
         params: params,
       }).then(resp => {
         if (resp.code == 0) {

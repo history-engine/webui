@@ -189,7 +189,7 @@ export default {
     reParse(uniqueId, version) {
       http({
         method: "post",
-        url: "/page/re-parse",
+        url: "/api/page/re-parse",
         data: {
           unique_id: uniqueId,
           version: version
@@ -262,7 +262,7 @@ export default {
 
       http({
         method: "post",
-        url: "/page/exclude",
+        url: "/api/page/exclude",
         data: {
           unique_id: this.currentUniqueId,
           version: this.currentVersion,
@@ -287,7 +287,7 @@ export default {
     submitDelete() {
       http({
         method: "delete",
-        url: "/page/delete",
+        url: "/api/page/delete",
         data: {
           unique_id: this.currentUniqueId,
           version: this.currentVersion
@@ -328,7 +328,7 @@ export default {
       let api = ''
       let params = {}
       if (this.uniqueId != '') {
-        api = '/page/versions'
+        api = '/api/page/versions'
         params = {
           unique_id: this.uniqueId,
           page : this.current_page,
@@ -336,7 +336,7 @@ export default {
         }
         document.title = this.uniqueId + " - History Engine";
       } else {
-        api = '/page/search'
+        api = '/api/page/search'
         params = {
           query: this.query,
             page: this.current_page || 1,

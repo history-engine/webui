@@ -27,7 +27,7 @@ export default {
   mounted() {
     http({
       method: 'get',
-      url: '/user/logout',
+      url: "/api/user/logout",
     }).then(res => {
       if (res.code == 0) {
         this.store.logout()

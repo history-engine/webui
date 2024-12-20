@@ -26,7 +26,7 @@ export default {
   mounted() {
     http({
       method: 'get',
-      url: '/user/info',
+      url: "/api/user/info",
     }).then(res => {
       if (res.code == 0) {
         this.store.login(res.data);

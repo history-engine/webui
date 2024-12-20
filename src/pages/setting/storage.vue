@@ -98,7 +98,7 @@ export default {
     submit() {
       http({
         method: "post",
-        url: "/setting/storage",
+        url: "/api/setting/storage",
         data: {
           max_version: this.setting.max_version,
           min_version_interval: this.setting.min_version_interval,
@@ -119,7 +119,7 @@ export default {
     loadFormData() {
       http({
         method: "get",
-        url: "/setting/storage",
+        url: "/api/setting/storage",
       }).then(resp => {
         if (resp.code == 0) {
           this.setting = resp.data

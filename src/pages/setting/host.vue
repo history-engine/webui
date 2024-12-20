@@ -227,7 +227,7 @@ export default {
     submitAdd() {
       http({
         method: "put",
-        url: "/setting/host",
+        url: "/api/setting/host",
         data: {
           type: this.type.abbr,
           host: this.host,
@@ -249,7 +249,7 @@ export default {
     submitDelete() {
       http({
         method: "delete",
-        url: "/setting/host",
+        url: "/api/setting/host",
         params: {
           id: this.id,
         }
@@ -271,7 +271,7 @@ export default {
     submitEdit() {
       http({
         method: "post",
-        url: "/setting/host",
+        url: "/api/setting/host",
         data: {
           id: this.id,
           type: this.type.abbr,
@@ -318,7 +318,7 @@ export default {
 
       http({
         method: "get",
-        url: "/setting/host",
+        url: "/api/setting/host",
         params: params,
       }).then(resp => {
         if (resp.code == 0) {

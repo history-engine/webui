@@ -1,14 +1,14 @@
 <template>
-  <v-container>
-    admin
+  <v-container class="">
+    page
   </v-container>
 </template>
 
 <route>
 {
-  meta: {
-    layout: "admin"
-  }
+meta: {
+layout: "admin"
+}
 }
 </route>
 

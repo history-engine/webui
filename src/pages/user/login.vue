@@ -100,7 +100,7 @@ export default {
     async submit() {
       http({
         method: 'post',
-        url: '/user/login',
+        url: "/api/user/login",
         data: {
           username: this.username,
           password: this.password,
