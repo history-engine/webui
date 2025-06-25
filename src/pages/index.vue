@@ -153,7 +153,7 @@ export default {
   }),
 
   mounted() {
-    this.current_page = parseInt(this.getQueryParam("page"), 10) || 0;
+    this.current_page = parseInt(this.getQueryParam("page"), 10) || 1;
     this.query = this.getQueryParam('query') || '';
     this.uniqueId = this.getQueryParam('unique_id') || '';
     this.onClick();
