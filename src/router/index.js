@@ -57,7 +57,28 @@ const routes = [
   // 管理员相关
   {
     path: '/admin',
+    name: 'AdminIndex',
     component: () => import('@/pages/admin/index.vue')
+  },
+  {
+    path: '/admin/user',
+    name: 'AdminUser',
+    component: () => import('@/pages/admin/user.vue')
+  },
+  {
+    path: '/admin/icon',
+    name: 'AdminIcon',
+    component: () => import('@/pages/admin/icon.vue')
+  },
+  {
+    path: '/admin/misc',
+    name: 'AdminMisc',
+    component: () => import('@/pages/admin/misc.vue')
+  },
+  {
+    path: '/admin/file',
+    name: 'AdminFile',
+    component: () => import('@/pages/admin/file.vue')
   },
   {
     path: '/stats',
